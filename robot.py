@@ -2,6 +2,7 @@ import numpy as np
 import pybullet as p
 import constants as c
 import pyrosim.pyrosim as pyrosim
+import os
 
 from pyrosim.neuralNetwork import NEURAL_NETWORK
 
@@ -10,10 +11,11 @@ from motor import MOTOR
 
 import simulation
 class ROBOT:
-    def __init__(self):
+    def __init__(self, solutionID):
+        self.solutionID = solutionID
         self.robotId = p.loadURDF("body.urdf")
 
-        self.nn = NEURAL_NETWORK("brain.nndf")
+        self.nn = NEURAL_NETWORK(f"brain{solutionID}.nndf")
 
         pyrosim.Prepare_To_Simulate(self.robotId)
         self.Prepare_To_Sense()
@@ -23,6 +25,8 @@ class ROBOT:
 
         # self.targetAnglesBack = np.zeros(c.numberOfSteps)
         # self.targetAnglesFront = np.zeros(c.numberOfSteps)
+
+        os.system("del brain" + str(solutionID) + ".nndf")
 
 
     def Prepare_To_Sense(self):
@@ -46,10 +50,24 @@ class ROBOT:
                 desiredAngle = self.nn.Get_Value_Of(neuronName)
                 self.motors[jointName].Set_Value(self, desiredAngle)
 
-                print(neuronName, jointName, desiredAngle)
-
+                # print(neuronName, jointName, desiredAngle)
     
     def Think(self):
         self.nn.Update()
-        self.nn.Print()
+        # self.nn.Print()
 
+
+    def Get_Fitness(self):
+
+        basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotId)
+        basePosition = basePositionAndOrientation[0]
+        xCoordinate = basePosition[0]
+
+        tempFile = "tmp" + str(self.solutionID) + ".txt"
+        fitnessFile = "fitness" + str(self.solutionID) + ".txt"
+
+
+        with open(tempFile, "w") as f:
+            f.write(str(xCoordinate))
+
+        os.rename(tempFile, fitnessFile)
