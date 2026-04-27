@@ -2,6 +2,7 @@ import copy
 import os
 from solution import SOLUTION
 import constants as c
+import numpy as np
 
 class PARALLEL_HILL_CLIMBER:
 
@@ -11,7 +12,9 @@ class PARALLEL_HILL_CLIMBER:
         os.system("del brain*.nndf")
 
         self.parents = {}
+        self.fitness = np.zeros((c.populationSize,c.numberOfGenerations), dtype=float)
         self.nextAvailableID = 0
+        self.generation = 0
 
         for i in range(c.populationSize):
             self.parents[i] = SOLUTION(self.nextAvailableID)
@@ -31,6 +34,7 @@ class PARALLEL_HILL_CLIMBER:
         self.Evaluate(self.children)
         self.Print()
         self.Select()
+        self.generation+= 1
 
     def Spawn(self):
         self.children = {}
@@ -53,18 +57,24 @@ class PARALLEL_HILL_CLIMBER:
         print("\n")
         for i in self.parents:
             print(f"Parent fitness: {self.parents[i].fitness}, Child fitness: {self.children[i].fitness}")
+            print(self.fitness)
         print("\n")
     
     def Select(self):
         for i in self.children:
-            if self.children[i].fitness < self.parents[i].fitness:
+            if self.children[i].fitness > self.parents[i].fitness:
                 self.parents[i] = self.children[i]
+            self.fitness[self.generation, i] = self.parents[i].fitness
+        
 
     def Show_Best(self):
         best_parent = self.parents[0]
         for i in self.parents:
-            if self.parents[i].fitness < best_parent.fitness:
+            if self.parents[i].fitness > best_parent.fitness:
                 best_parent = self.parents[i]
         best_parent.Start_Simulation("GUI")
+
+    def Save_Matrix(self):
+        np.savetxt('fitnessMatrix.txt', self.fitness, delimiter=', ')
 
     

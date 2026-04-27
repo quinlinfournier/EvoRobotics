@@ -5,15 +5,15 @@ import pyrosim.pyrosim as pyrosim
 import os
 
 from pyrosim.neuralNetwork import NEURAL_NETWORK
-
+import constants as c
 from sensor import SENSOR
 from motor import MOTOR
 
 import simulation
 class ROBOT:
-    def __init__(self, solutionID):
+    def __init__(self, solutionID, varientID):
         self.solutionID = solutionID
-        self.robotId = p.loadURDF("body.urdf")
+        self.robotId = p.loadURDF("body{c.varientID}.urdf")
 
         self.nn = NEURAL_NETWORK(f"brain{solutionID}.nndf")
 
@@ -62,6 +62,7 @@ class ROBOT:
         basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotId)
         basePosition = basePositionAndOrientation[0]
         xCoordinate = basePosition[0]
+
 
         tempFile = "tmp" + str(self.solutionID) + ".txt"
         fitnessFile = "fitness" + str(self.solutionID) + ".txt"

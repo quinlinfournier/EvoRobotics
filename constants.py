@@ -7,11 +7,13 @@ amplitudeBackLeg = np.pi/4
 frequencyBackLeg = -4
 phaseOffsetBackLeg = -np.pi/2
 
-numberOfGenerations = 10
+numberOfGenerations = 15
 
-populationSize = 10
+populationSize = 15
 
 numSensorNeurons = 9
-numMotorNeurons = 8
+numMotorNeurons = 12
 
 motorJointRange = .2
+
+varientID = 1

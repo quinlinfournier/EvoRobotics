@@ -5,6 +5,7 @@ import pyrosim.pyrosim as pyrosim
 import numpy as np
 import constants as c
 import sys
+import os
 
 from simulation import SIMULATION
 
@@ -14,7 +15,7 @@ solutionID = sys.argv[2]
 simulation = SIMULATION(directOrGUI, solutionID)
 simulation.Run()
 fitness = simulation.Get_Fitness()
-
+# os.system("del body*.urdf")
 
 
 # np.save("data/backLegTouch.npy", backLegTouch)
